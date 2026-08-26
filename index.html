@@ -1,64 +1,176 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>九九リス 親子対戦版</title>
-<link rel="stylesheet" href="battle.css">
-</head>
-<body>
-<h1>九九リス 親子対戦版</h1>
-<div id="battle-container">
-  <div class="player-area">
-    <h2 class="player-title parent-title"><span class="family-face">👨‍🦱</span><span class="player-label">親</span><span class="family-face">👩‍🦰</span></h2>
-    <div class="controls">
-      <button type="button" class="mouse-btn parent-btn" onclick="startPlayer('parent')"><span>▶</span> 親 START</button>
-      <button type="button" class="mouse-btn parent-btn" onclick="reloadPlayer('parent')"><span>↻</span> 親 RELOAD</button>
-    </div>
-    <iframe id="parentGame" src="parent.html" title="親の九九リス"></iframe>
-    <div class="battle-feedback parent-feedback" id="parent-feedback"></div>
-    <div class="key-guide parent-guide">
-      <div class="guide-title">🎮 親の操作キー</div>
-      <div class="guide-row"><span class="keycap">A</span><span class="action">◀ 左</span></div>
-      <div class="guide-row"><span class="keycap">D</span><span class="action">▶ 右</span></div>
-      <div class="guide-row"><span class="keycap">S</span><span class="action">▼ 落下</span></div>
-      <div class="guide-row"><span class="keycap">W</span><span class="action">♻ ゴミ＆リユース</span></div>
-      <div class="guide-divider"></div>
-      <div class="guide-row"><span class="keycap small">T</span><span class="action">▶ 親START</span></div>
-      <div class="guide-row"><span class="keycap small">Y</span><span class="action">↻ 親RELOAD</span></div>
-      <div class="guide-row pause-row"><span class="keycap small">N</span><span class="action">Ⅱ 一時停止／再開</span></div>
-    </div>
-  </div>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <script src="program.js"></script>
+        <audio id="idou" preload="auto">
+            <source src="oto/idou.mp3" type="audio/mp3">
+        </audio>
+        <audio id="gomireuse" preload="auto">
+            <source src="oto/gomireuse.mp3" type="audio/mp3">
+        </audio>
+        <audio id="ochiru" preload="auto">
+            <source src="oto/ochiru.mp3" type="audio/mp3">
+        </audio>
+        <audio id="don" preload="auto">
+            <source src="oto/don.mp3" type="audio/mp3">
+        </audio>
+        <audio id="gamestart" preload="auto">
+            <source src="oto/gamestart.mp3" type="audio/mp3">
+        </audio>        
+        <audio id="kieru" preload="auto">
+            <source src="oto/kieru.mp3" type="audio/mp3">
+        </audio>
+        <audio id="kieru2" preload="auto">
+            <source src="oto/kieru2.mp3" type="audio/mp3">
+        </audio>                
+        <audio id="kieru99" preload="auto">
+            <source src="oto/kieru99.mp3" type="audio/mp3">
+        </audio>
+        <audio id="gameover" preload="auto">
+            <source src="oto/gameover.mp3" type="audio/mp3">
+        </audio>
+        <audio id="suteru" preload="auto">
+            <source src="oto/suteru.mp3" type="audio/mp3">
+        </audio>
+      <meta name="viewport" content="width=360,user-scalable=no">
+    </head>
+    <body onload="hajime()" onkeydown="ugokasu(event)">
+        <div style="position:absolute; left:5px; top:0px">
+           Kantan Kukuris C
+        </div>
+        <div style="position:absolute; left:10px; top:20px">
+           SCORE:<span id="tokuten">000</span>
+        </div>
+        <div style="position:absolute; left:10px; top:40px" >
+           RECYCLE:<span id="reuse">00</span>
+        </div>
+        <div style="position:absolute; left:302px; top:100px">
+            next
+        </div>
+        <div style="position:absolute; left:302px; top:290px">
+            trash
+        </div>
+            <canvas id="back" width="280" height="455"
+                style="position:absolute; left:20px; top:65px; background-color: black"></canvas>
+            <canvas id="game" width="280" height="455"
+                style="position:absolute; left:20px; top:65px; background-color: transparent"></canvas>
+            <canvas id="tsugi" width="35" height="35"
+                style="position:absolute; left:300px; top:65px; background-color: black"></canvas>
+            <canvas id="gomi" width="35" height="175"
+                style="position:absolute; left:300px; top:310px; background-color: black"></canvas>    
+            <button id="kaishibtn"
+                style="position: absolute; left:250px;top:10px; width:55px; height:40px" onclick="gamekaishi()">
+                Start
+            </button>
+            <button id="owaribtn"
+                style="position: absolute; left:310px;top:10px; width:40px; height:40px" onclick="gameowari()">
+                Re.
+            </button>                      
 
-  <div id="timer-area">
-    <div id="timer"><span id="time">09:00</span></div>
-    <div id="countdown" aria-live="assertive"></div>
-    <div id="result"></div>
-  </div>
+            <button id="rightbtn"
+                style="position: absolute; left:190px;top:490px; width:70px; height:50px" onclick="moveright()">
+                ⇨
+            </button>            
+            <button id="leftbtn"
+                style="position: absolute; left:20px;top:490px; width:70px; height:50px" onclick="moveleft()">
+                ⇦
+            </button>  
+            <button id="gomibtn"
+                style="position: absolute; left:285px;top:490px; width:50px; height:50px" onclick="if ((gomijyoutai[0][0] == 100) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)){
+                    gomiidou();} else if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 99;
+                    gomireuse();}">
+                ⇧
+            </button>
+            <button id="fallbtn"
+                style="position: absolute; left:115px;top:490px; width:50px; height:50px" onclick="fall()">
+                ⇩
+            </button>
 
-  <div class="player-area">
-    <h2 class="player-title child-title"><span class="family-face">👦</span><span class="player-label">子</span><span class="family-face">👧</span></h2>
-    <div class="controls">
-      <button type="button" class="mouse-btn child-btn" onclick="startPlayer('child')"><span>▶</span> 子 START</button>
-      <button type="button" class="mouse-btn child-btn" onclick="reloadPlayer('child')"><span>↻</span> 子 RELOAD</button>
-    </div>
-    <iframe id="childGame" src="../index.html" title="子の九九リス"></iframe>
-    <div class="battle-feedback child-feedback" id="child-feedback"></div>
-    <div class="key-guide child-guide">
-      <div class="guide-title">🎮 子の操作キー</div>
-      <div class="guide-row"><span class="keycap">←</span><span class="action">左</span></div>
-      <div class="guide-row"><span class="keycap">→</span><span class="action">右</span></div>
-      <div class="guide-row"><span class="keycap">↓</span><span class="action">▼ 落下</span></div>
-      <div class="guide-row"><span class="keycap">↑</span><span class="action">♻ ゴミ＆リユース</span></div>
-      <div class="guide-row recycle-row"><span class="keycap wide">0～9</span><span class="action">リサイクル</span></div>
-      <div class="guide-divider"></div>
-      <div class="guide-row"><span class="keycap small">O</span><span class="action">▶ 子START</span></div>
-      <div class="guide-row"><span class="keycap small">P</span><span class="action">↻ 子RELOAD</span></div>
-      <div class="guide-row pause-row"><span class="keycap small">N</span><span class="action">Ⅱ 一時停止／再開</span></div>
-    </div>
-    <div class="recycle-note">リサイクルが使えるのは、<br><strong>ゴミを5つ</strong>ためてから。</div>
-  </div>
-</div>
-<script src="battle.js"></script>
-</body>
+
+            <button id="rightbtn"
+                style="background-color: transparent;border:none;position: absolute; left:209px;top:65px; width:55px; height:419px" onclick="moveright()">
+                
+            </button>            
+            <button id="leftbtn"
+                style="background-color: transparent;border:none;position: absolute; left:55px;top:65px; width:55px; height:419px" onclick="moveleft()">
+                
+            </button>  
+            <button id="gomibtn"
+                style="background-color: transparent;border:none;position: absolute; left:125px;top:65px; width:69px; height:244px" onclick="if ((gomijyoutai[0][0] == 100) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)){
+                    gomiidou();} else if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 99;
+                    gomireuse();}">
+                
+            </button>
+            <button id="fallbtn"
+                style="background-color: transparent;border:none;position: absolute; left:125px;top:414px; width:69px; height:69px" onclick="fall()">
+                
+            </button>
+
+            <button id="0btn"
+                style="position: absolute; left:270px;top:140px; width:25px; height:25px" onclick="if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 0;
+                    gomireuse();}">
+                0
+            </button>
+            <button id="1btn"
+                style="position: absolute; left:270px;top:175px; width:25px; height:25px" onclick="if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 1;
+                    gomireuse();}">
+                1
+            </button>
+            <button id="2btn"
+                style="position: absolute; left:270px;top:210px; width:25px; height:25px" onclick="if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 2;
+                    gomireuse();}">
+                2
+            </button>
+            <button id="3btn"
+                style="position: absolute; left:270px;top:245px; width:25px; height:25px" onclick="if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 3;
+                    gomireuse();}">
+                3
+            </button>
+            <button id="4btn"
+                style="position: absolute; left:270px;top:280px; width:25px; height:25px" onclick="if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 4;
+                    gomireuse();}">
+                4
+            </button>
+            <button id="5btn"
+                style="position: absolute; left:270px;top:315px; width:25px; height:25px" onclick="if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 5;
+                    gomireuse();}">
+                5
+            </button>
+            <button id="6btn"
+                style="position: absolute; left:270px;top:350px; width:25px; height:25px" onclick="if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 6;
+                    gomireuse();}">
+                6
+            </button>
+            <button id="7btn"
+                style="position: absolute; left:270px;top:385px; width:25px; height:25px" onclick="if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 7;
+                    gomireuse();}">
+                7
+            </button>
+            <button id="8btn"
+                style="position: absolute; left:270px;top:420px; width:25px; height:25px" onclick="if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 8;
+                    gomireuse();}">
+                8
+            </button>
+            <button id="9btn"
+                style="position: absolute; left:270px;top:455px; width:25px; height:25px" onclick="if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 9;
+                    gomireuse();}">
+                9
+            </button>
+            <img id="gazo" src="image/0.jpg"
+            width="80" height="60" border="0" alt=""
+            style="position:absolute; left:170px;top:2px; background-color: black;">
+        </body>
 </html>

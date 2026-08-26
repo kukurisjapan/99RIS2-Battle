@@ -1,0 +1,455 @@
+* { box-sizing: border-box; }
+html, body {
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:"Yu Gothic", "Meiryo", sans-serif;
+  text-align:center;
+  background:linear-gradient(#fff, #f8fbff);
+}
+
+h1 {
+  margin:3px 0 4px;
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:.04em;
+  color:#26344a;
+  text-shadow:0 1px 0 #fff;
+}
+
+#battle-container {
+  display:grid;
+  grid-template-columns: 330px 90px 330px;
+  justify-content:center;
+  align-items:start;
+  gap:8px;
+  width:100%;
+}
+
+.player-area {
+  width:330px;
+  position:relative;
+}
+
+.player-title {
+  margin:2px 0 3px;
+  font-size:19px;
+  font-weight:900;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:88px;
+  padding:2px 13px;
+  border-radius:18px;
+  color:#fff;
+  box-shadow:0 2px 0 rgba(0,0,0,.15);
+}
+.parent-title { background:#2f72c9; }
+.child-title { background:#e85a83; }
+.player-icon { font-size:18px; margin-right:3px; }
+
+.controls {
+  height:31px;
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  position:relative;
+  z-index:10;
+}
+
+.mouse-btn {
+  border:0;
+  border-radius:12px;
+  color:#fff;
+  font-size:12px;
+  font-weight:900;
+  padding:4px 9px;
+  cursor:pointer;
+  box-shadow:0 2px 0 rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.35);
+  transition:transform .08s ease;
+}
+.mouse-btn:active { transform:translateY(2px); box-shadow:0 0 0 rgba(0,0,0,.18); }
+.parent-btn { background:#2f72c9; }
+.child-btn { background:#e85a83; }
+.mouse-btn span { font-size:14px; margin-right:2px; }
+
+iframe {
+  display:block;
+  width:400px;
+  height:660px;
+  margin:0;
+  border:1px solid #000;
+  transform:scale(.68);
+  transform-origin:top left;
+  pointer-events:none;
+}
+.player-area:first-child iframe { margin-left:60px; }
+.player-area:last-child iframe { margin-left:0; }
+
+/* 操作説明カード：ゲーム画面に重ならない位置 */
+.key-guide {
+  position:absolute;
+  top:61px;
+  width:176px;
+  padding:8px 9px 9px;
+  border-radius:15px;
+  font-size:12px;
+  line-height:1.15;
+  font-weight:800;
+  white-space:nowrap;
+  z-index:5;
+  text-align:left;
+  background:rgba(255,255,255,.97);
+  box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+.parent-guide {
+  left:-126px;
+  border:3px solid #5b91d6;
+}
+.child-guide {
+  left:276px;
+  border:3px solid #ef7898;
+}
+
+.guide-title {
+  text-align:center;
+  font-size:13px;
+  font-weight:900;
+  color:#fff;
+  border-radius:9px;
+  padding:5px 3px;
+  margin-bottom:7px;
+  letter-spacing:.02em;
+}
+.parent-guide .guide-title { background:#2f72c9; }
+.child-guide .guide-title { background:#e85a83; }
+
+.guide-row {
+  display:grid;
+  grid-template-columns:42px 1fr;
+  align-items:center;
+  min-height:29px;
+  column-gap:6px;
+}
+.keycap {
+  width:38px;
+  height:27px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  color:#fff;
+  font-size:15px;
+  font-weight:900;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 2px 0 rgba(0,0,0,.15);
+}
+.parent-guide .keycap { background:#2f72c9; }
+.child-guide .keycap { background:#e85a83; }
+.keycap.small { font-size:14px; }
+.keycap.wide { width:42px; font-size:12px; }
+.action { display:block; font-size:12px; font-weight:900; }
+.guide-divider {
+  height:2px;
+  margin:5px 0 5px;
+  border-radius:2px;
+  opacity:.55;
+}
+.parent-guide .guide-divider { background:#8eb4e6; }
+.child-guide .guide-divider { background:#f3a6b9; }
+.pause-row .action { font-size:11px; }
+.recycle-row .action { font-size:12px; }
+
+#timer-area {
+  width:90px;
+  min-height:500px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:8px;
+  padding-top:205px;
+}
+#timer {
+  font-size:20px;
+  line-height:1.35;
+  font-weight:bold;
+  background:#fff;
+  border:2px solid #333;
+  border-radius:8px;
+  padding:8px 6px;
+  width:88px;
+}
+#time { font-size:24px; }
+#result {
+  font-size:20px;
+  line-height:1.2;
+  font-weight:bold;
+  min-height:24px;
+  width:180px;
+  pointer-events:none;
+  white-space:nowrap;
+}
+
+/* 家族イラスト：左＝父/男の子、右＝母/女の子 */
+.family-face {
+  font-size: 22px;
+  line-height: 1;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,.65));
+}
+.player-label { margin:0 7px; }
+.player-title { gap:2px; }
+
+/* タイトルを子ども向けに少し楽しく */
+h1 {
+  color:#e56a28;
+  text-shadow: 0 2px 0 #fff, 0 3px 0 rgba(73,124,74,.18);
+}
+
+/* 正解・ボーナス演出は各ゲーム画面の中に表示 */
+.battle-celebration {
+  position:absolute;
+  left:50%;
+  top:245px;
+  transform:translate(-50%, -50%) scale(.72);
+  opacity:0;
+  pointer-events:none;
+  z-index:50;
+  min-width:180px;
+  padding:12px 18px 14px;
+  border-radius:22px;
+  background:rgba(255,255,255,.96);
+  border:4px solid #f6b63c;
+  box-shadow:0 7px 0 rgba(143,93,35,.18), 0 10px 24px rgba(0,0,0,.18);
+  text-align:center;
+  font-family:"Yu Gothic", "Meiryo", sans-serif;
+  font-weight:900;
+  transition:opacity .12s ease, transform .18s cubic-bezier(.2,1.5,.3,1);
+}
+.battle-celebration.show {
+  opacity:1;
+  transform:translate(-50%, -50%) scale(1);
+}
+.battle-celebration .cele-main {
+  display:block;
+  font-size:30px;
+  line-height:1.05;
+  color:#ef6c2f;
+  text-shadow:0 2px 0 #fff;
+}
+.battle-celebration .cele-points {
+  display:block;
+  margin-top:4px;
+  font-size:23px;
+  color:#e34d65;
+}
+.battle-celebration.bonus {
+  border-color:#7bc85a;
+  background:#fffef2;
+}
+.battle-celebration.bonus .cele-main { color:#3b9a56; }
+.battle-celebration.bonus .cele-points { color:#e0a322; }
+.battle-celebration .cele-stars { display:block; font-size:20px; letter-spacing:5px; margin-bottom:4px; }
+
+#timer-area { position:relative; z-index:30; }
+#result {
+  position:absolute;
+  top:48px;
+  left:50%;
+  transform:translateX(-50%);
+  min-height:32px;
+  width:220px;
+  padding:4px 10px;
+  border-radius:14px;
+  background:rgba(255,255,255,.97);
+  border:2px solid #e8ad43;
+  color:#e15c39;
+  text-shadow:0 1px 0 #fff;
+  box-shadow:0 3px 8px rgba(0,0,0,.12);
+  white-space:nowrap;
+}
+
+
+/* 対戦中の「正解！」・「ボーナス！」は、ゲーム画面の外側にある
+   操作説明カードの下へ表示して、ゲームエリアに隠れないようにする。 */
+.battle-feedback {
+  position:absolute;
+  top:280px;
+  left:50%;
+  width:220px;
+  min-height:70px;
+  padding:4px 8px;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  opacity:0;
+  transform:translateX(-50%) scale(.75);
+  pointer-events:none;
+  z-index:50;
+  background:transparent;
+  box-shadow:none;
+  transition:opacity .12s ease, transform .18s cubic-bezier(.2,1.5,.3,1);
+}
+.parent-feedback, .child-feedback { left:50%; border:0; }
+.battle-feedback.show { opacity:1; transform:translateX(-50%) scale(1); }
+.battle-feedback .feedback-main {
+  font-size:26px; line-height:1.05; font-weight:900;
+  text-shadow:0 2px 0 #fff;
+}
+.parent-feedback .feedback-main { color:#ef6c2f; }
+.child-feedback .feedback-main { color:#e34d65; }
+.battle-feedback .feedback-points {
+  margin-top:4px; font-size:21px; font-weight:900; color:#e0a322;
+}
+.battle-feedback.bonus { background:transparent; border-color:transparent; }
+.battle-feedback.bonus .feedback-main { color:#3b9a56; }
+.battle-feedback .feedback-stars { display:none; }
+
+/* 勝敗表示はタイマー直下の中央に置き、ゲーム画面に重ねない。 */
+#timer-area #result {
+  position:absolute;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:max-content;
+  min-height:28px;
+  padding:2px 4px;
+  font-size:20px;
+  line-height:1.1;
+  border-radius:0;
+  white-space:nowrap;
+  z-index:40;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+
+
+/* 勝敗・一時停止の表示色 */
+#timer-area #result.result-parent-win {
+  color:#1f66c1;
+  border-color:transparent;
+  background:transparent;
+}
+#timer-area #result.result-child-win {
+  color:#d63d5d;
+  border-color:transparent;
+  background:transparent;
+}
+#timer-area #result.result-draw {
+  color:#145a35;
+  border-color:transparent;
+  background:transparent;
+}
+#timer-area #result.result-pause {
+  color:#111;
+  border-color:transparent;
+  background:transparent;
+}
+
+
+
+/* 勝敗リアクション：リスは表示せず、星と涙だけ */
+.player-area::after {
+  position:absolute;
+  top:4px;
+  opacity:0;
+  pointer-events:none;
+  font-size:24px;
+  line-height:1;
+  z-index:25;
+}
+.player-area:first-child::after { right:18px; }
+.player-area:last-child::after { left:18px; }
+.player-area.winner-react::after { content:"★"; opacity:1; animation:starWin .9s cubic-bezier(.2,1.5,.3,1) 1 forwards; }
+.player-area.loser-react::after { content:"💧"; opacity:1; animation:tearSad .9s ease-in-out 1 forwards; }
+.player-area.draw-react::after { content:"★"; opacity:1; animation:starWin .9s ease-in-out 1 forwards; }
+@keyframes starWin { 0%{transform:translateY(3px) scale(.55) rotate(-12deg);opacity:0} 45%{transform:translateY(-5px) scale(1.35) rotate(8deg);opacity:1} 100%{transform:translateY(-2px) scale(1) rotate(0deg);opacity:1} }
+@keyframes tearSad { 0%{transform:translateY(0) scale(.7);opacity:0} 40%{transform:translateY(3px) scale(1.05);opacity:1} 100%{transform:translateY(7px) scale(.95);opacity:1} }
+
+/* 仕上げ調整 */
+#timer-area #result.result-victory {
+  animation: resultPop .55s cubic-bezier(.2,1.45,.3,1);
+  text-shadow:0 1px 0 #fff;
+}
+@keyframes resultPop {
+  0% { transform:translateX(-50%) scale(.72); opacity:0; }
+  70% { transform:translateX(-50%) scale(1.12); opacity:1; }
+  100% { transform:translateX(-50%) scale(1); opacity:1; }
+}
+@keyframes countPop {
+  0% { transform:scale(.45); opacity:.2; }
+  65% { transform:scale(1.15); opacity:1; }
+  100% { transform:scale(1); opacity:1; }
+}
+@keyframes goPop {
+  0% { transform:scale(.55) rotate(-6deg); opacity:.2; }
+  60% { transform:scale(1.18) rotate(3deg); opacity:1; }
+  100% { transform:scale(1); rotate:0deg; opacity:1; }
+}
+.battle-feedback.show { animation:feedbackBounce .5s cubic-bezier(.2,1.5,.3,1); }
+.battle-feedback.bonus.show { animation:bonusBounce .62s cubic-bezier(.2,1.55,.3,1); }
+@keyframes feedbackBounce {
+  0% { transform:translateX(-50%) scale(.45); opacity:0; }
+  65% { transform:translateX(-50%) scale(1.12); opacity:1; }
+  100% { transform:translateX(-50%) scale(1); opacity:1; }
+}
+@keyframes bonusBounce {
+  0% { transform:translateX(-50%) scale(.4) rotate(-4deg); opacity:0; }
+  55% { transform:translateX(-50%) scale(1.16) rotate(2deg); opacity:1; }
+  100% { transform:translateX(-50%) scale(1); opacity:1; }
+}
+
+/* 最終調整：親の正解・ボーナスは青、子は赤 */
+.parent-feedback .feedback-main,
+.parent-feedback .feedback-points,
+.parent-feedback.bonus .feedback-main,
+.parent-feedback.bonus .feedback-points {
+  color:#2f72c9;
+}
+.child-feedback .feedback-main,
+.child-feedback .feedback-points,
+.child-feedback.bonus .feedback-main,
+.child-feedback.bonus .feedback-points {
+  color:#d63d5d;
+}
+
+/* 子側の正解・ボーナス表示を、親側の表示位置に対応させて少し左へ */
+.child-feedback { left:37%; }
+
+/* 勝敗決定時の星は金色 */
+.player-area.winner-react::after,
+.player-area.draw-react::after {
+  color:#f4c430;
+  text-shadow:0 1px 2px rgba(120,80,0,.25);
+}
+.player-area.loser-react::after {
+  color:#4aa9e8;
+}
+
+
+/* 子側リサイクル機能の説明：操作カードの外側・下に配置 */
+.recycle-note {
+  position:absolute;
+  top:386px;
+  left:274px;
+  width:184px;
+  padding:7px 8px;
+  border:2px solid #ef7898;
+  border-radius:10px;
+  background:rgba(255,255,255,.96);
+  color:#333;
+  font-size:11px;
+  line-height:1.25;
+  font-weight:900;
+  text-align:center;
+  box-shadow:0 2px 7px rgba(0,0,0,.12);
+  z-index:5;
+}
+.recycle-note strong { color:#d63d5d; }

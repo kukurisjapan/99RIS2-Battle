@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <base href="../">
+        <script src="program.js"></script>
+        <audio id="idou" preload="auto">
+            <source src="oto/idou.mp3" type="audio/mp3">
+        </audio>
+        <audio id="gomireuse" preload="auto">
+            <source src="oto/gomireuse.mp3" type="audio/mp3">
+        </audio>
+        <audio id="ochiru" preload="auto">
+            <source src="oto/ochiru.mp3" type="audio/mp3">
+        </audio>
+        <audio id="don" preload="auto">
+            <source src="oto/don.mp3" type="audio/mp3">
+        </audio>
+        <audio id="gamestart" preload="auto">
+            <source src="oto/gamestart.mp3" type="audio/mp3">
+        </audio>        
+        <audio id="kieru" preload="auto">
+            <source src="oto/kieru.mp3" type="audio/mp3">
+        </audio>
+        <audio id="kieru2" preload="auto">
+            <source src="oto/kieru2.mp3" type="audio/mp3">
+        </audio>                
+        <audio id="kieru99" preload="auto">
+            <source src="oto/kieru99.mp3" type="audio/mp3">
+        </audio>
+        <audio id="gameover" preload="auto">
+            <source src="oto/gameover.mp3" type="audio/mp3">
+        </audio>
+        <audio id="suteru" preload="auto">
+            <source src="oto/suteru.mp3" type="audio/mp3">
+        </audio>
+      <meta name="viewport" content="width=360,user-scalable=no">
+    
+<style>
+  h5 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.05;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+  h5 span {
+    font-size: 21px;
+    font-weight: 900;
+  }
+</style>
+</head>
+    <body onload="hajime()" onkeydown="parentUgokasu(event)" style="background-color:#e0ffff;">
+        <div style="position:absolute; left:20px; top:18px">
+            <h2>九九リス</h2>
+        <div style="position:absolute; left:0px; top:60px">
+            <h5>SCORE:<span id="tokuten">000</span></h5>
+        <div style="position:absolute; left:0px; top:20px" >
+            <h5>REUSE:<span id="reuse">00</span></h5>
+        </div>
+        </div>
+        </div>       
+        <div style="position:absolute; left:305px; top:555px">
+            <h6>M.Y</h6>
+        </div>
+        <div style="position:absolute; left:30px; top:0px">
+            <h6>かんたん</h6>
+        </div>
+        <div style="position:absolute; left:100px; top:0px">
+            <h6>Ver.2.4</h6>
+        </div>
+        <div style="position:absolute; left:270px; top:75px">
+            <h6>next</h6>
+        </div>
+        <div style="position:absolute; left:304px; top:355px">
+            <h6>trash</h6>
+        </div>
+            <canvas id="back" width="280" height="455"
+                style="position:absolute; left:20px; top:150px; background-color: black"></canvas>
+            <canvas id="game" width="280" height="455"
+                style="position:absolute; left:20px; top:150px; background-color: transparent"></canvas>
+            <canvas id="tsugi" width="35" height="35"
+                style="position:absolute; left:265px; top:115px; background-color: black"></canvas>
+            <canvas id="gomi" width="35" height="175"
+                style="position:absolute; left:300px; top:395px; background-color: black"></canvas>    
+                <button id="kaishibtn"
+                style="position: absolute; left:260px;top:50px; width:70px; height:40px" onclick="gamekaishi()">
+                Start
+            </button>
+            <button id="owaribtn"
+                style="position: absolute; left:260px;top:20px; width:70px; height:20px" onclick="gameowari()">
+                Reload
+            </button>                      
+            <button id="rightbtn"
+                style="position: absolute; left:190px;top:605px; width:70px; height:50px" onclick="moveright()">
+                ⇨
+            </button>            
+            <button id="leftbtn"
+                style="position: absolute; left:20px;top:605px; width:70px; height:50px" onclick="moveleft()">
+                ⇦
+            </button>  
+            <button id="gomibtn"
+                style="position: absolute; left:285px;top:605px; width:50px; height:50px" onclick="if ((gomijyoutai[0][0] == 100) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)){
+                    gomiidou();} else if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 99;
+                    gomireuse();}">
+                ⇧
+            </button>
+            <button id="fallbtn"
+                style="position: absolute; left:115px;top:605px; width:50px; height:50px" onclick="fall()">
+                ⇩
+            </button>
+
+
+            <button id="rightbtn"
+                style="background-color: transparent;border:none;position: absolute; left:209px;top:150px; width:55px; height:419px" onclick="moveright()">
+                
+            </button>            
+            <button id="leftbtn"
+                style="background-color: transparent;border:none;position: absolute; left:55px;top:150px; width:55px; height:419px" onclick="moveleft()">
+                
+            </button>  
+            <button id="gomibtn"
+                style="background-color: transparent;border:none;position: absolute; left:125px;top:150px; width:69px; height:244px" onclick="if ((gomijyoutai[0][0] == 100) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)){
+                    gomiidou();} else if ((gomijyoutai[0][0] == 99) && (jyoutai[iy + 7][ix] == 100) && (iy > tenjyou)&&(reuse < 99)){
+                    reshu = 99;
+                    gomireuse();}">
+                
+            </button>
+            <button id="fallbtn"
+                style="background-color: transparent;border:none;position: absolute; left:125px;top:499px; width:69px; height:69px" onclick="fall()">
+                
+            </button>
+            <img id="gazo" src="image/0.jpg"
+            width="90" height="120" border="0" alt=""
+            style="position:absolute; left:160px;top:25px; background-color: black;">
+        
+<script>
+// 親専用操作：A=左、D=右、S=落下、W=ゴミを捨てる
+// 元の九九リスの ugokasu() にキーコードを渡す。
+function parentUgokasu(e) {
+    const key = (e.key || '').toLowerCase();
+    const map = { a: 37, d: 39, s: 40, w: 38 };
+    if (map[key]) {
+        e.preventDefault();
+        ugokasu({ keyCode: map[key], which: map[key] });
+    } else if ([37,38,39,40].includes(e.keyCode)) {
+        // 矢印キーも従来どおり使えるようにする
+        ugokasu(e);
+    }
+}
+</script>
+<script>
+// 親専用操作
+// A=左、D=右、S=落下、W=ゴミを捨てる。
+// battleページから postMessage で届いたキーもここで処理する。
+
+function parentUgokasu(e) {
+    const key = (e.key || '').toLowerCase();
+    const map = { a: 37, d: 39, s: 40, w: 38 };
+
+    if (map[key]) {
+        e.preventDefault();
+        ugokasu({ keyCode: map[key], which: map[key] });
+    } else if ([37, 38, 39, 40].includes(e.keyCode)) {
+        ugokasu(e);
+    }
+}
+
+// 子側がSTARTされてフォーカスを持っていても、
+// battleページから親iframeへ送られたキーを直接受け取る。
+window.addEventListener("message", function(event) {
+    const data = event.data || {};
+
+    if (data.type !== "parent-key") return;
+
+    const key = String(data.key || "").toLowerCase();
+    if (!["a", "d", "s", "w"].includes(key)) return;
+
+    parentUgokasu({
+        key: key,
+        keyCode: { a: 37, d: 39, s: 40, w: 38 }[key],
+        which: { a: 37, d: 39, s: 40, w: 38 }[key]
+    });
+});
+</script>
+
+<script>
+window.addEventListener("message", function(e){
+ const d=e.data||{};
+ if(d.type!=="battle-parent-key") return;
+ const map={a:37,d:39,s:40,w:38};
+ const code=map[String(d.key||"").toLowerCase()];
+ if(!code || typeof ugokasu!=="function") return;
+ ugokasu({keyCode:code,which:code,key:String(d.key).toLowerCase()});
+});
+</script>
+<script>
+window.addEventListener("message", function(event) {
+    const data = event.data || {};
+    if (data.type === "battle-start") {
+        if (typeof gamekaishi === "function") gamekaishi();
+    }
+});
+</script>
+</body>
+</html>

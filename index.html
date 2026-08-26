@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>九九リス 親子対戦版</title>
+<link rel="stylesheet" href="battle.css">
+</head>
+<body>
+<h1>九九リス 親子対戦版</h1>
+<div id="battle-container">
+  <div class="player-area">
+    <h2 class="player-title parent-title"><span class="family-face">👨‍🦱</span><span class="player-label">親</span><span class="family-face">👩‍🦰</span></h2>
+    <div class="controls">
+      <button type="button" class="mouse-btn parent-btn" onclick="startPlayer('parent')"><span>▶</span> 親 START</button>
+      <button type="button" class="mouse-btn parent-btn" onclick="reloadPlayer('parent')"><span>↻</span> 親 RELOAD</button>
+    </div>
+    <iframe id="parentGame" src="parent.html" title="親の九九リス"></iframe>
+    <div class="battle-feedback parent-feedback" id="parent-feedback"></div>
+    <div class="key-guide parent-guide">
+      <div class="guide-title">🎮 親の操作キー</div>
+      <div class="guide-row"><span class="keycap">A</span><span class="action">◀ 左</span></div>
+      <div class="guide-row"><span class="keycap">D</span><span class="action">▶ 右</span></div>
+      <div class="guide-row"><span class="keycap">S</span><span class="action">▼ 落下</span></div>
+      <div class="guide-row"><span class="keycap">W</span><span class="action">♻ ゴミ＆リユース</span></div>
+      <div class="guide-divider"></div>
+      <div class="guide-row"><span class="keycap small">T</span><span class="action">▶ 親START</span></div>
+      <div class="guide-row"><span class="keycap small">Y</span><span class="action">↻ 親RELOAD</span></div>
+      <div class="guide-row pause-row"><span class="keycap small">N</span><span class="action">Ⅱ 一時停止／再開</span></div>
+    </div>
+  </div>
+
+  <div id="timer-area">
+    <div id="timer"><span id="time">09:00</span></div>
+    <div id="countdown" aria-live="assertive"></div>
+    <div id="result"></div>
+  </div>
+
+  <div class="player-area">
+    <h2 class="player-title child-title"><span class="family-face">👦</span><span class="player-label">子</span><span class="family-face">👧</span></h2>
+    <div class="controls">
+      <button type="button" class="mouse-btn child-btn" onclick="startPlayer('child')"><span>▶</span> 子 START</button>
+      <button type="button" class="mouse-btn child-btn" onclick="reloadPlayer('child')"><span>↻</span> 子 RELOAD</button>
+    </div>
+    <iframe id="childGame" src="../index.html" title="子の九九リス"></iframe>
+    <div class="battle-feedback child-feedback" id="child-feedback"></div>
+    <div class="key-guide child-guide">
+      <div class="guide-title">🎮 子の操作キー</div>
+      <div class="guide-row"><span class="keycap">←</span><span class="action">左</span></div>
+      <div class="guide-row"><span class="keycap">→</span><span class="action">右</span></div>
+      <div class="guide-row"><span class="keycap">↓</span><span class="action">▼ 落下</span></div>
+      <div class="guide-row"><span class="keycap">↑</span><span class="action">♻ ゴミ＆リユース</span></div>
+      <div class="guide-row recycle-row"><span class="keycap wide">0～9</span><span class="action">リサイクル</span></div>
+      <div class="guide-divider"></div>
+      <div class="guide-row"><span class="keycap small">O</span><span class="action">▶ 子START</span></div>
+      <div class="guide-row"><span class="keycap small">P</span><span class="action">↻ 子RELOAD</span></div>
+      <div class="guide-row pause-row"><span class="keycap small">N</span><span class="action">Ⅱ 一時停止／再開</span></div>
+    </div>
+    <div class="recycle-note">リサイクルが使えるのは、<br><strong>ゴミを5つ</strong>ためてから。</div>
+  </div>
+</div>
+<script src="battle.js"></script>
+</body>
+</html>
